@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Shower Presentation Engine</title>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/screen-16x10.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/github.min.css">
+</head>
+<body class="shower list">
+<header class="caption">
+    <h1>Как бороться с лапшой</h1>
+</header>
+<section class="slide" id="cover">
+    <h2>Как бороться с лапшой</h2>
+    <img src="pictures/po.jpg" alt="" class="cover">
+    <style>
+        #cover h2 {
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            color: #FFF;
+            text-align: center;
+            font-size: 70px;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+    </style>
+</section>
+<section class="slide">
+    <h2>Callback</h2>
+    <figure>
+        <blockquote>
+            <p>
+                Callback-функция или функция обратного вызова - передача исполняемого кода в качестве одного из
+                параметров другого кода.
+            </p>
+        </blockquote>
+    </figure>
+    <pre class="next">
+        <code class="js">app.all('/secret', function (req, res, next) {</code>
+        <code class="js">  console.log('Accessing the secret section ...');</code>
+        <code class="js">  <mark>next();</mark> <span class="comment">// pass control to the next handler</span></code>
+        <code class="js">});</code>
+    </pre>
+</section>
+<section class="slide" id="callback-hell">
+    <h2>Callback Hell</h2>
+    <pre class="small-code">
+        <code class="js">fs.readdir(source, <mark>function (err, files)</mark> {</code>
+        <code class="js">   if (err) {</code>
+        <code class="js">       console.log('Error finding files: ' + err)</code>
+        <code class="js">   } else {</code>
+        <code class="js">       files.forEach(<mark>function (filename, fileIndex)</mark> {</code>
+        <code class="js">           console.log(filename)</code>
+        <code class="js">           gm(source + filename).size(<mark>function (err, values)</mark> {</code>
+        <code class="js">               if (err) {</code>
+        <code class="js">                   console.log('Error identifying file size: ' + err)</code>
+        <code class="js">               } else {</code>
+        <code class="js">                   console.log(filename + ' : ' + values)</code>
+        <code class="js">                   aspect = (values.width / values.height)</code>
+        <code class="js">                   widths.forEach(<mark>function (width, widthIndex)</mark> {</code>
+        <code class="js">                       height = Math.round(width / aspect)</code>
+        <code
+            class="js">                       console.log('resizing ' + filename + 'to ' + height + 'x' + height)</code>
+        <code class="js">                       this.resize(width, height).write(dest + 'w' + filename, <mark>function (err)</mark> {</code>
+        <code class="js">                           if (err) console.log('Error writing file: ' + err)</code>
+        <code class="js">                       })</code>
+        <code class="js">                   }.bind(this))</code>
+        <code class="js">               }</code>
+        <code class="js">           })</code>
+        <code class="js">       })</code>
+        <code class="js">   }</code>
+        <code class="js">})</code>
+    </pre>
+    <pre class="next small-code">
+        <code class="js"><mark>fs.readdir(readFilesFunc(readSingleFileFunc(gm(eachSizeFunc(fixWidthFunc)))));</mark></code>
+    </pre>
+    <style>
+        #callback-hell .small-code code {
+            font-size: 15px;
+            line-height: 15px;
+        }
+    </style>
+</section>
+<section class="slide">
+    <h2>Promise</h2>
+    <img src="pictures/promise.png" alt="" class="cover">
+</section>
+<section class="slide">
+    <h2>Promise</h2>
+    <p>
+        Promise – это специальный объект, который содержит своё состояние. Вначале pending («ожидание»), затем – одно
+        из: fulfilled («выполнено успешно») или rejected («выполнено с ошибкой»).
+    </p>
+    <img src="pictures/promise_detailed.png" class="next" width="50%">
+</section>
+<section class="slide">
+    <h2>Promise</h2>
+    <ol>
+        <li><a href="https://promisesaplus.com" target="_blank">https://promisesaplus.com</a></li>
+        <li><a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects" target="_blank">ES 2015</a>
+        </li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+               target="_blank">Documentation</a></li>
+    </ol>
+</section>
+<section class="slide" id="promise-code-example">
+    <h2>Promise</h2>
+    <pre class="small-code">
+        <code class="js">var promise = new Promise(function(resolve, reject) {</code>
+        <code class="js">    setTimeout(function () {</code>
+        <code class="js">        if(Math.rand() > 0.5) {</code>
+        <code class="js">           return <mark>resolve([1, 2, 3, 4, 5]);</mark></code>
+        <code class="js">        }</code>
+        <code class="js">        <mark>reject(new Error("Bang!")); // throw new Error("Bang!");</mark></code>
+        <code class="js">    }, 10 * 1000);</code>
+        <code class="js">});</code>
+    </pre>
+
+    <pre class="small-code next">
+        <code class="js">promise.then(</code>
+        <code class="js">   result => {</code>
+        <code class="js">       // первая функция-обработчик - запустится при вызове resolve</code>
+        <code class="js">       alert("Fulfilled: " + result); // result - аргумент resolve</code>
+        <code class="js">   },</code>
+        <code class="js">   error => {</code>
+        <code class="js">       // вторая функция - запустится при вызове reject</code>
+        <code class="js">       alert("Rejected: " + error); // error - аргумент reject</code>
+        <code class="js">   }</code>
+        <code class="js">);</code>
+    </pre>
+    <style>
+        #promise-code-example .small-code code {
+            font-size: 18px;
+            line-height: 18px;
+        }
+    </style>
+</section>
+<section class="slide" id="promise-chain-hell">
+    <h2>Promise chain hell</h2>
+    <pre class="small-code">
+        <code class="js">function handleRequestPromises(req, res) {</code>
+        <code class="js">    var user = req.user</code>
+        <code class="js">    isUserValidAsync(user).<mark>then</mark>(function () {</code>
+        <code class="js">        return Promise.all([</code>
+        <code class="js">            getUserDataAsync(user),</code>
+        <code class="js">            getRateAsync('service')</code>
+        <code class="js">        ])</code>
+        <code class="js">  }).<mark>then</mark>(function (results) {</code>
+        <code class="js">        const newData = updateData(results[0], results[1])</code>
+        <code class="js">        return updateUserDataAsync(user, newData)</code>
+        <code class="js">  }).<mark>then</mark>(function (data) {</code>
+        <code class="js">        res.send(data)</code>
+        <code class="js">  }).<mark>catch</mark>(function () {</code>
+        <code class="js">        res.error('An error ocurred!')</code>
+        <code class="js">  })</code>
+        <code class="js">}</code>
+    </pre>
+    <style>
+        #promise-chain-hell .small-code code {
+            font-size: 18px;
+            line-height: 18px;
+        }
+    </style>
+</section>
+
+<section class="slide">
+    <img src="pictures/async-await-js.png" alt="" class="cover">
+</section>
+<section class="slide">
+    <h2>Async/await</h2>
+    <ol>
+        <li>async/await — это обертка над Promise.</li>
+        <li>When an async function is called, it returns a Promise. (Когда вы объявляете функцию как асинхронную, через волшебное слово <mark>async</mark>, вы говорите, что данная функция возвращает <mark>Promise</mark>.)</li>
+        <li>The await operator is used to wait for a Promise returned by an async function.</li>
+        <li>Оператор await можно использовать только в асинхронной функции.</li>
+    </ol>
+</section>
+<section class="slide">
+    <h2>Async/await</h2>
+    <ol>
+        <li><a href="https://tc39.github.io/ecma262/#sec-async-function-objects" target="_blank">ES 2017 draft</a></li>
+        <li><a href="https://babeljs.io/docs/plugins/transform-async-to-generator/" target="_blank">Babel Async to generator transform</a>
+        </li>
+    </ol>
+</section>
+
+<section class="slide" id="async-await-example">
+    <h2>Async/await</h2>
+    <pre class="small-code">
+        <code class="js"><mark>async</mark> function asyncHandleRequest(req, res) {</code>
+        <code class="js">    try {</code>
+        <code class="js">        const { user } = req</code>
+        <code class="js">        <mark>await</mark> isUserValidAsync(user)</code>
+        <code class="js">        const [data, rate] = <mark>await</mark> Promise.all([getUserDataAsync(user), getRateAsync('service')])</code>
+        <code class="js">        const savedData = <mark>await</mark> updateUserDataAsync(user, updateData(data, rate))</code>
+        <code class="js">        res.send(savedData)</code>
+        <code class="js">    } catch (err) {</code>
+        <code class="js">        res.error('An error ocurred!')</code>
+        <code class="js">    }</code>
+        <code class="js">}</code>
+    </pre>
+    <style>
+        #async-await-example .small-code code {
+            font-size: 15px;
+            line-height: 26px;
+        }
+    </style>
+</section>
+
+
+<section class="slide">
+    <h2>Async/await HELL</h2>
+    <img src="pictures/await-hell.gif" class="cover">
+</section>
+
+
+<section class="slide" id="see-more">
+    <h2>Как бороться с лапшой!</h2>
+    <p>Кукареко Александр, iKantam</p>
+    <p>Дополнительная инфомрация:</p>
+     <ul>
+         <li><a href="https://www.youtube.com/watch?v=M1N6WlJEEMs" target="_blank">Хороший доклад про Async/await от Вовы Дашукевича</a></li>
+         <li><a href="https://habrahabr.ru/post/282477" target="_blank">Статья на Хабре # 1</a></li>
+         <li><a href="https://habrahabr.ru/post/320306" target="_blank">Статья на Хабре # 2</a></li>
+     </ul>
+    <p>
+        Презентация: <a href="https://lightsuner.github.io/presentation/async_await_ik_2017">https://lightsuner.github.io/presentation/async_await_ik_2017</a>
+    </p>
+</section>
+
+<!--
+    To hide progress bar from entire presentation
+    just remove “progress” element.
+    -->
+<div class="progress"></div>
+<script src="shower/shower.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+<!-- Photos by John Carey, fiftyfootshadows.net -->
+</body>
+</html>
